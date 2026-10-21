@@ -1,0 +1,1120 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <title>Employee Attendance</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+            background: #f5f7f8;
+        }
+
+        header {
+            padding: 17px 20px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        main {
+            width: min(100% - 28px, 560px);
+            margin: 28px auto;
+        }
+
+        .panel, .modal-content {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        h1 {
+            font-size: 25px;
+            margin: 0 0 8px;
+        }
+
+        h2 {
+            font-size: 19px;
+            margin: 0 0 14px;
+        }
+
+        p {
+            line-height: 1.5;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font: inherit;
+            background: #fff;
+        }
+
+        button {
+            border: 0;
+            border-radius: 5px;
+            padding: 11px 14px;
+            font: inherit;
+            cursor: pointer;
+            background: #176b55;
+            color: #fff;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .primary {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .secondary {
+            background: #e9e9e9;
+            color: #222;
+        }
+
+        .notice {
+            display: none;
+            margin: 14px 0;
+            padding: 11px;
+            border-radius: 5px;
+            background: #fbeaea;
+            color: #8b1c1c;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notice.show {
+            display: block;
+        }
+
+        .notice.success {
+            background: #e8f6ee;
+            color: #17643b;
+        }
+
+        .notice.info {
+            background: #eaf2ff;
+            color: #214d86;
+        }
+
+        #attendanceCard {
+            display: none;
+            margin-top: 22px;
+        }
+
+        #attendanceCard.visible {
+            display: block;
+        }
+
+        .employee-info {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 18px;
+            margin-bottom: 18px;
+        }
+
+        #employeeProfilePic {
+            display: block;
+            width: 104px;
+            height: 104px;
+            margin: 0 auto 12px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: #eee;
+        }
+
+        .employee-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .small {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .profile-form {
+            margin-top: 14px;
+            text-align: left;
+        }
+
+        .profile-form button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .status {
+            margin: 14px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            padding: 18px;
+            background: rgba(0, 0, 0, .55);
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            width: min(100%, 440px);
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .modal-actions {
+            display: grid;
+            gap: 8px;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            max-height: 340px;
+            display: block;
+            object-fit: cover;
+            background: #111;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .camera-help {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Employee Attendance</header>
+
+<main>
+    <section class="panel">
+        <h1>Employee sign in</h1>
+        <p class="muted">
+            Enter your registered employee ID and full name to continue.
+        </p>
+
+        <div id="message" class="notice"
+             role="status" aria-live="polite"></div>
+
+        <form id="identityForm">
+            <label for="employeeId">Employee ID</label>
+            <input
+                id="employeeId"
+                name="employee_id"
+                type="text"
+                inputmode="numeric"
+                autocomplete="username"
+                required
+            >
+
+            <label for="fullName">Full name</label>
+            <input
+                id="fullName"
+                name="full_name"
+                type="text"
+                autocomplete="name"
+                required
+            >
+
+            <button id="verifyBtn" class="primary" type="submit">
+                Continue
+            </button>
+        </form>
+
+        <section id="attendanceCard">
+            <div class="employee-info">
+                <img id="employeeProfilePic" alt="Employee profile picture"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='100%25' height='100%25' fill='%23eeeeee'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23999999'/%3E%3Cpath d='M20 115 Q20 72 60 72 Q100 72 100 115' fill='%23999999'/%3E%3C/svg%3E">
+
+                <div id="employeeName" class="employee-name"></div>
+                <div id="employeeIdLabel" class="small"></div>
+
+                <form id="pictureForm" class="profile-form">
+                    <label for="profile_pic">Profile picture</label>
+                    <input
+                        id="profile_pic"
+                        name="profile_pic"
+                        type="file"
+                        accept=".jpg,.jpeg,.png,.webp"
+                        required
+                    >
+                    <button id="uploadPictureBtn" type="submit">
+                        Upload / Change Picture
+                    </button>
+                </form>
+
+                <div id="pictureMessage" class="notice"
+                     role="status" aria-live="polite"></div>
+            </div>
+
+            <h2>Workplace check-in</h2>
+            <p class="muted">
+                Allow location access to record attendance at your workplace.
+            </p>
+
+            <div id="gpsMessage" class="notice"
+                 role="status" aria-live="polite"></div>
+
+            <div id="statusText" class="status">
+                Location not checked.
+            </div>
+
+            <button id="checkInBtn" class="primary" type="button">
+                Check in with GPS
+            </button>
+
+            <button id="logoutBtn" class="primary secondary" type="button">
+                Log out
+            </button>
+        </section>
+    </section>
+</main>
+
+<footer>Employee attendance management</footer>
+
+<!-- Password setup/sign-in modal -->
+<div id="passwordModal" class="modal"
+     role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="modal-content">
+        <h2 id="modalTitle">Create your password</h2>
+
+        <p id="modalDescription" class="muted">
+            Choose a password with at least 8 characters.
+        </p>
+
+        <div id="modalMessage" class="notice"
+             role="status" aria-live="polite"></div>
+
+        <form id="passwordForm">
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password"
+                minlength="8"
+                autocomplete="current-password"
+                required
+            >
+
+            <div id="confirmField">
+                <label for="confirmPassword">Confirm password</label>
+                <input
+                    id="confirmPassword"
+                    type="password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="modal-actions">
+                <button id="passwordBtn" class="primary" type="submit">
+                    Create password
+                </button>
+                <button id="cancelModalBtn"
+                        class="primary secondary" type="button">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Face enrollment/verification modal -->
+<div id="faceModal" class="modal"
+     role="dialog" aria-modal="true" aria-labelledby="faceTitle">
+
+    <div class="modal-content">
+        <h2 id="faceTitle">Face authentication</h2>
+
+        <p id="faceDescription" class="muted">
+            Position your face in the camera and look directly at it.
+        </p>
+
+        <div id="faceMessage" class="notice info"
+             role="status" aria-live="polite">
+            Preparing face recognition...
+        </div>
+
+        <video id="cameraVideo" autoplay muted playsinline></video>
+
+        <p class="camera-help">
+            Make sure your face is clearly visible, lighting is adequate,
+            and only one face appears in the camera.
+        </p>
+
+        <div class="modal-actions">
+            <button id="captureFaceBtn" class="primary"
+                    type="button" disabled>
+                Capture and verify face
+            </button>
+            <button id="cancelFaceBtn"
+                    class="primary secondary" type="button">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Correct browser build of face-api.js -->
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js"></script>
+
+<script>
+(() => {
+    "use strict";
+
+    const $ = id => document.getElementById(id);
+
+    const identityForm = $("identityForm");
+    const verifyBtn = $("verifyBtn");
+    const message = $("message");
+    const attendanceCard = $("attendanceCard");
+
+    const passwordModal = $("passwordModal");
+    const passwordForm = $("passwordForm");
+    const passwordBtn = $("passwordBtn");
+    const modalMessage = $("modalMessage");
+    const confirmField = $("confirmField");
+    const confirmPassword = $("confirmPassword");
+
+    const faceModal = $("faceModal");
+    const faceMessage = $("faceMessage");
+    const faceTitle = $("faceTitle");
+    const faceDescription = $("faceDescription");
+    const cameraVideo = $("cameraVideo");
+    const captureFaceBtn = $("captureFaceBtn");
+
+    const gpsMessage = $("gpsMessage");
+    const statusText = $("statusText");
+    const checkInBtn = $("checkInBtn");
+
+    const pictureForm = $("pictureForm");
+    const pictureMessage = $("pictureMessage");
+    const uploadPictureBtn = $("uploadPictureBtn");
+
+    const defaultImage =
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='100%25' height='100%25' fill='%23eeeeee'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23999999'/%3E%3Cpath d='M20 115 Q20 72 60 72 Q100 72 100 115' fill='%23999999'/%3E%3C/svg%3E";
+
+    const MODEL_URL =
+        "https://justadudewhohacks.github.io/face-api.js/models";
+
+    let passwordMode = "setup";
+    let verifiedEmployee = null;
+    let faceMode = "verify";
+    let cameraStream = null;
+    let modelsLoaded = false;
+    let faceOperationInProgress = false;
+
+    function showNotice(element, text, type = "error") {
+        element.textContent = text;
+        element.className =
+            "notice show" +
+            (type === "success" ? " success" :
+             type === "info" ? " info" : "");
+    }
+
+    function clearNotice(element) {
+        element.textContent = "";
+        element.className = "notice";
+    }
+
+    async function readJSON(response) {
+        try {
+            return await response.json();
+        } catch {
+            return {
+                success: false,
+                message: "The server returned an invalid response."
+            };
+        }
+    }
+
+    async function postJSON(url, body) {
+        const response = await fetch(url, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        return {
+            response,
+            result: await readJSON(response)
+        };
+    }
+
+    function openPasswordModal(mode) {
+        passwordMode = mode;
+        passwordForm.reset();
+        clearNotice(modalMessage);
+
+        const setup = mode === "setup";
+
+        $("modalTitle").textContent =
+            setup ? "Create your password" : "Welcome back";
+
+        $("modalDescription").textContent = setup
+            ? "Choose a password with at least 8 characters."
+            : "Enter your password to continue to face authentication.";
+
+        confirmField.hidden = !setup;
+        confirmPassword.required = setup;
+
+        $("password").autocomplete =
+            setup ? "new-password" : "current-password";
+
+        passwordBtn.textContent = setup
+            ? "Create password" : "Sign in";
+
+        passwordModal.classList.add("open");
+        $("password").focus();
+    }
+
+    function closePasswordModal() {
+        passwordModal.classList.remove("open");
+        passwordForm.reset();
+        clearNotice(modalMessage);
+    }
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+
+        cameraVideo.srcObject = null;
+        captureFaceBtn.disabled = true;
+    }
+
+    function closeFaceModal() {
+        stopCamera();
+        faceModal.classList.remove("open");
+        faceOperationInProgress = false;
+        captureFaceBtn.textContent = "Capture and verify face";
+    }
+
+    async function loadFaceModels() {
+        if (modelsLoaded) return;
+
+        if (typeof window.faceapi === "undefined") {
+            throw new Error(
+                "The face-recognition library failed to load. " +
+                "Check your internet connection and refresh the page."
+            );
+        }
+
+        showNotice(
+            faceMessage,
+            "Loading face-recognition models. Please wait...",
+            "info"
+        );
+
+        try {
+            await Promise.all([
+                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+            ]);
+
+            modelsLoaded = true;
+        } catch (error) {
+            console.error("Face model loading error:", error);
+
+            throw new Error(
+                "The face-recognition library loaded, but its model files " +
+                "could not be downloaded. Check your internet connection " +
+                "and the model requests in the browser Network tab."
+            );
+        }
+    }
+
+    async function startFaceAuthentication(enrolled) {
+        faceMode = enrolled ? "verify" : "enroll";
+
+        faceTitle.textContent = enrolled
+            ? "Verify your face"
+            : "Register your face";
+
+        faceDescription.textContent = enrolled
+            ? "Use the camera to verify the face registered to your account."
+            : "This is your first face registration. Look directly at the camera.";
+
+        captureFaceBtn.textContent = enrolled
+            ? "Capture and verify face"
+            : "Capture and register face";
+
+        faceModal.classList.add("open");
+        captureFaceBtn.disabled = true;
+
+        showNotice(
+            faceMessage,
+            "Preparing face recognition...",
+            "info"
+        );
+
+        try {
+            await loadFaceModels();
+
+            if (!navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia) {
+                throw new Error(
+                    "Camera access is unavailable. Use localhost or HTTPS " +
+                    "and a supported browser."
+                );
+            }
+
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: "user",
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
+                },
+                audio: false
+            });
+
+            cameraVideo.srcObject = cameraStream;
+            await cameraVideo.play();
+
+            showNotice(
+                faceMessage,
+                "Camera ready. Keep your face visible and capture when ready.",
+                "info"
+            );
+
+            captureFaceBtn.disabled = false;
+
+        } catch (error) {
+            console.error("Face authentication startup error:", error);
+            stopCamera();
+            showNotice(faceMessage, error.message);
+        }
+    }
+
+    async function captureAndAuthenticateFace() {
+        if (faceOperationInProgress) return;
+
+        if (typeof window.faceapi === "undefined" ||
+            !cameraVideo.videoWidth) {
+            showNotice(
+                faceMessage,
+                "The camera or face-recognition library is not ready yet."
+            );
+            return;
+        }
+
+        faceOperationInProgress = true;
+        captureFaceBtn.disabled = true;
+        captureFaceBtn.textContent = "Processing face...";
+
+        try {
+            const detection = await faceapi
+                .detectSingleFace(
+                    cameraVideo,
+                    new faceapi.TinyFaceDetectorOptions({
+                        inputSize: 320,
+                        scoreThreshold: 0.5
+                    })
+                )
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+
+            if (!detection) {
+                throw new Error(
+                    "No clear face detected. Improve the lighting, face " +
+                    "the camera and try again."
+                );
+            }
+
+            const descriptor = Array.from(detection.descriptor);
+
+            if (descriptor.length !== 128 ||
+                !descriptor.every(Number.isFinite)) {
+                throw new Error("A valid face descriptor could not be created.");
+            }
+
+            showNotice(
+                faceMessage,
+                faceMode === "enroll"
+                    ? "Registering your face..."
+                    : "Verifying your face...",
+                "info"
+            );
+
+            const endpoint = faceMode === "enroll"
+                ? "/attendance/face-enroll"
+                : "/attendance/face-verify";
+
+            const { response, result } = await postJSON(
+                endpoint,
+                { descriptor }
+            );
+
+            if (!response.ok || !result.success ||
+                !result.authenticated) {
+                throw new Error(
+                    result.message || "Face authentication failed."
+                );
+            }
+
+            closeFaceModal();
+            closePasswordModal();
+
+            showAuthenticated(result.employee);
+
+            showNotice(
+                gpsMessage,
+                result.message || "Face authentication successful.",
+                "success"
+            );
+
+        } catch (error) {
+            console.error("Face capture/authentication error:", error);
+
+            showNotice(
+                faceMessage,
+                error.message || "Face authentication failed. Try again."
+            );
+        } finally {
+            faceOperationInProgress = false;
+
+            if (faceModal.classList.contains("open")) {
+                captureFaceBtn.disabled = false;
+                captureFaceBtn.textContent = faceMode === "enroll"
+                    ? "Capture and register face"
+                    : "Capture and verify face";
+            }
+        }
+    }
+
+    function showAuthenticated(employee) {
+        if (!employee || !employee.id) {
+            showNotice(
+                message,
+                "The server did not return valid employee information."
+            );
+            return;
+        }
+
+        verifiedEmployee = employee;
+
+        $("employeeName").textContent = employee.name || "Employee";
+        $("employeeIdLabel").textContent =
+            "Employee ID: " + employee.id;
+
+        const image = $("employeeProfilePic");
+        image.onerror = () => {
+            image.onerror = null;
+            image.src = defaultImage;
+        };
+
+        const profilePath = employee.profile_pic;
+
+        image.src = profilePath
+            ? (profilePath.startsWith("http")
+                ? profilePath
+                : profilePath.startsWith("/static/")
+                    ? profilePath
+                    : "/static/" + profilePath.replace(/^\/+/, ""))
+            : defaultImage;
+
+        identityForm.style.display = "none";
+        attendanceCard.classList.add("visible");
+        clearNotice(message);
+    }
+
+    // STEP 1: Verify employee ID and name.
+    identityForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        clearNotice(message);
+
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = "Checking...";
+
+        const employee_id = $("employeeId").value.trim();
+        const full_name = $("fullName").value.trim();
+
+        try {
+            const { response, result } = await postJSON(
+                "/attendance/login",
+                { employee_id, full_name }
+            );
+
+            console.log("Identity login response:", result);
+
+            if (!response.ok || !result.success) {
+                showNotice(
+                    message,
+                    result.message || "Could not verify employee."
+                );
+                return;
+            }
+
+            if (result.needs_password_setup) {
+                openPasswordModal("setup");
+                return;
+            }
+
+            if (result.needs_password) {
+                openPasswordModal("login");
+                return;
+            }
+
+            if (result.needs_face_auth) {
+                await startFaceAuthentication(
+                    Boolean(result.face_enrolled)
+                );
+                return;
+            }
+
+            if (result.authenticated) {
+                showAuthenticated(result.employee);
+                return;
+            }
+
+            showNotice(
+                message,
+                result.message || "The next authentication step was not provided."
+            );
+
+        } catch (error) {
+            console.error("Identity verification error:", error);
+            showNotice(message, "Could not contact the server. Please try again.");
+        } finally {
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = "Continue";
+        }
+    });
+
+    // STEP 2: Create a password or enter the existing password.
+    passwordForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        clearNotice(modalMessage);
+
+        const password = $("password").value;
+        const confirm_password = confirmPassword.value;
+
+        if (password.length < 8) {
+            showNotice(modalMessage, "Password must be at least 8 characters.");
+            return;
+        }
+
+        if (passwordMode === "setup" &&
+            password !== confirm_password) {
+            showNotice(modalMessage, "Passwords do not match.");
+            return;
+        }
+
+        passwordBtn.disabled = true;
+        passwordBtn.textContent = "Please wait...";
+
+        try {
+            let response;
+            let result;
+
+            if (passwordMode === "setup") {
+                ({ response, result } = await postJSON(
+                    "/attendance/setup-password",
+                    { password, confirm_password }
+                ));
+            } else {
+                ({ response, result } = await postJSON(
+                    "/attendance/login",
+                    {
+                        employee_id: $("employeeId").value.trim(),
+                        full_name: $("fullName").value.trim(),
+                        password
+                    }
+                ));
+            }
+
+            console.log("Password authentication response:", result);
+
+            if (!response.ok || !result.success) {
+                showNotice(
+                    modalMessage,
+                    result.message || "Password authentication failed."
+                );
+                return;
+            }
+
+            if (result.needs_face_auth) {
+                closePasswordModal();
+                await startFaceAuthentication(
+                    Boolean(result.face_enrolled)
+                );
+                return;
+            }
+
+            if (result.authenticated) {
+                closePasswordModal();
+                showAuthenticated(result.employee);
+                return;
+            }
+
+            showNotice(
+                modalMessage,
+                result.message ||
+                "The server did not provide the next authentication step."
+            );
+
+        } catch (error) {
+            console.error("Password authentication error:", error);
+            showNotice(
+                modalMessage,
+                "Could not contact the server. Please try again."
+            );
+        } finally {
+            passwordBtn.disabled = false;
+            passwordBtn.textContent = passwordMode === "setup"
+                ? "Create password" : "Sign in";
+        }
+    });
+
+    // STEP 3: Capture face and submit descriptor to Flask.
+    captureFaceBtn.addEventListener(
+        "click",
+        captureAndAuthenticateFace
+    );
+
+    $("cancelFaceBtn").addEventListener("click", () => {
+        closeFaceModal();
+        showNotice(
+            message,
+            "Face authentication was cancelled. Continue to sign in when ready."
+        );
+    });
+
+    $("cancelModalBtn").addEventListener("click", closePasswordModal);
+
+    // Profile picture upload.
+    pictureForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        clearNotice(pictureMessage);
+
+        if (!verifiedEmployee) {
+            showNotice(pictureMessage, "Please sign in first.");
+            return;
+        }
+
+        const fileInput = $("profile_pic");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showNotice(pictureMessage, "Please choose a picture.");
+            return;
+        }
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            showNotice(pictureMessage, "Choose a JPG, PNG or WEBP image.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("profile_pic", file);
+
+        uploadPictureBtn.disabled = true;
+        uploadPictureBtn.textContent = "Uploading...";
+
+        try {
+            const response = await fetch(
+                "/attendance/profile-picture",
+                {
+                    method: "POST",
+                    credentials: "same-origin",
+                    body: formData
+                }
+            );
+
+            const result = await readJSON(response);
+
+            if (!response.ok || !result.success) {
+                showNotice(
+                    pictureMessage,
+                    result.message || "Picture upload failed."
+                );
+                return;
+            }
+
+            const imageUrl = result.image_url;
+            $("employeeProfilePic").src =
+                imageUrl + (imageUrl.includes("?") ? "&" : "?") +
+                "v=" + Date.now();
+
+            verifiedEmployee.profile_pic = imageUrl;
+
+            showNotice(
+                pictureMessage,
+                result.message || "Profile picture updated.",
+                "success"
+            );
+
+            pictureForm.reset();
+
+        } catch (error) {
+            console.error("Profile picture upload error:", error);
+            showNotice(pictureMessage, "Could not upload the picture.");
+        } finally {
+            uploadPictureBtn.disabled = false;
+            uploadPictureBtn.textContent = "Upload / Change Picture";
+        }
+    });
+
+    // GPS attendance check-in.
+    checkInBtn.addEventListener("click", () => {
+        clearNotice(gpsMessage);
+
+        if (!verifiedEmployee) {
+            showNotice(gpsMessage, "Please sign in first.");
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            showNotice(gpsMessage, "Your browser does not support location access.");
+            return;
+        }
+
+        checkInBtn.disabled = true;
+        checkInBtn.textContent = "Checking location...";
+
+        navigator.geolocation.getCurrentPosition(
+            async position => {
+                try {
+                    const { response, result } = await postJSON(
+                        "/attendance/check-in",
+                        {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        }
+                    );
+
+                    if (!response.ok || !result.success) {
+                        showNotice(
+                            gpsMessage,
+                            result.message || "Check-in failed."
+                        );
+                        statusText.textContent =
+                            result.status || "Check-in unsuccessful.";
+                        return;
+                    }
+
+                    showNotice(
+                        gpsMessage,
+                        result.message || "Attendance recorded.",
+                        "success"
+                    );
+
+                    statusText.textContent = "Status: " + result.status;
+
+                } catch (error) {
+                    console.error("GPS check-in error:", error);
+                    showNotice(gpsMessage, "Could not contact the server.");
+                } finally {
+                    checkInBtn.disabled = false;
+                    checkInBtn.textContent = "Check in with GPS";
+                }
+            },
+            error => {
+                checkInBtn.disabled = false;
+                checkInBtn.textContent = "Check in with GPS";
+
+                showNotice(
+                    gpsMessage,
+                    error.code === 1
+                        ? "Allow location access in your browser settings."
+                        : "Could not obtain your location. Please try again."
+                );
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+        );
+    });
+
+    // Logout.
+    $("logoutBtn").addEventListener("click", async () => {
+        try {
+            await postJSON("/attendance/logout", {});
+        } catch (error) {
+            console.error("Logout request failed:", error);
+        } finally {
+            closeFaceModal();
+            closePasswordModal();
+
+            verifiedEmployee = null;
+            attendanceCard.classList.remove("visible");
+            identityForm.style.display = "block";
+            identityForm.reset();
+            pictureForm.reset();
+
+            clearNotice(message);
+            clearNotice(gpsMessage);
+            clearNotice(pictureMessage);
+
+            statusText.textContent = "Location not checked.";
+            checkInBtn.disabled = false;
+            checkInBtn.textContent = "Check in with GPS";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    });
+})();
+</script>
+
+</body>
+</html>
+```

@@ -1,0 +1,475 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Enrolment | WorkForce</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #ffffff;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: -0.7px;
+        }
+
+        .brand span {
+            color: #1e293b;
+        }
+
+        .nav-label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Main layout */
+        .page-container {
+            max-width: 1100px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 28px;
+        }
+
+        .page-heading h1 {
+            font-size: 30px;
+            margin-bottom: 9px;
+            color: #172554;
+        }
+
+        .page-heading p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 0.85fr 1.5fr;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        /* Information panel */
+        .info-panel {
+            background: linear-gradient(145deg, #1d4ed8, #1e40af);
+            color: white;
+            padding: 32px 27px;
+            border-radius: 16px;
+            min-height: 400px;
+        }
+
+        .info-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .info-panel h2 {
+            font-size: 24px;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .info-panel > p {
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .benefits {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .benefits li {
+            margin: 19px 0;
+            font-size: 14px;
+            display: flex;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .check {
+            color: #86efac;
+            font-weight: bold;
+        }
+
+        /* Form card */
+        .form-card {
+            background: #ffffff;
+            border: 1px solid #e5eaf1;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+        }
+
+        .form-heading {
+            padding-bottom: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .form-heading h2 {
+            font-size: 21px;
+            margin-bottom: 7px;
+        }
+
+        .form-heading p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 650;
+            margin-bottom: 9px;
+            color: #334155;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dbe2ea;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e293b;
+            background: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input::placeholder {
+            color: #a0aaba;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .field-hint {
+            margin-top: 7px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* Flash messages */
+        .alert {
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .alert.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* Mobile layout */
+        @media (max-width: 760px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .info-panel {
+                min-height: auto;
+            }
+
+            .page-container {
+                margin: 30px auto;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .form-card {
+                padding: 23px 18px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .navbar {
+                padding: 16px 5%;
+            }
+
+            .nav-label {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="brand">Work<span>Force.</span></div>
+        <div class="nav-label">Employee Management System</div>
+    </nav>
+
+    <main class="page-container">
+
+        <div class="page-heading">
+            <h1>Employee Enrolment</h1>
+            <p>Register a new employee and record their employment details.</p>
+        </div>
+
+        <div class="content">
+
+            <!-- Left information panel -->
+            <aside class="info-panel">
+
+                <div class="info-icon">👥</div>
+
+                <h2>Build your team with confidence.</h2>
+
+                <p>
+                    Add new employees to your workforce by entering
+                    their personal information, job position and salary.
+                </p>
+
+                <ul class="benefits">
+                    <li>
+                        <span class="check">✓</span>
+                        Organised employee records
+                    </li>
+                    <li>
+                        <span class="check">✓</span>
+                        Clear salary information
+                    </li>
+                    <li>
+                        <span class="check">✓</span>
+                        Structured employment details
+                    </li>
+                </ul>
+
+            </aside>
+
+            <!-- Employee enrolment form -->
+            <section class="form-card">
+
+                <div class="form-heading">
+                    <h2>Employee Information</h2>
+                    <p>Complete all required fields marked with an asterisk (*).</p>
+                </div>
+
+                <!-- Flask flash messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+
+                <form action="{{ url_for('home') }}" method="POST">
+
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label for="emp_name">
+                                Employee Full Name <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="emp_name"
+                                name="emp_name"
+                                placeholder="e.g. Abdul Mohammed"
+                                autocomplete="name"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="email">
+                                Email Address <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="employee@example.com"
+                                autocomplete="email"
+                                maxlength="120"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="post">
+                                Job Position <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="post"
+                                name="post"
+                                placeholder="e.g. Accountant"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="employment_type">
+                                Employment Type <span class="required">*</span>
+                            </label>
+
+                            <select
+                                id="employment_type"
+                                name="employment_type"
+                                required
+                            >
+                                <option value="">Select type</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Internship">Internship</option>
+                                <option value="Temporary">Temporary</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="salary">
+                                Monthly Salary (GHS) <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                id="salary"
+                                name="salary"
+                                placeholder="e.g. 3500.00"
+                                min="0.01"
+                                step="0.01"
+                                required
+                            >
+
+                            <span class="field-hint">
+                                Enter the employee's agreed monthly salary in Ghana cedis.
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        + &nbsp; Enrol Employee
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer>
+        &copy; 2026 WorkForce Employee Management System.
+        All rights reserved.
+    </footer>
+
+</body>
+</html>
+```
