@@ -1,0 +1,20 @@
+# Secrets
+config.env
+.env
+.env.*
+!.env.example
+
+# Virtual environments
+.env/
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Flask instance data
+instance/
+
+# Private employee photos
+static/uploads/employees/
