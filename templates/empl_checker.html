@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,64 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
     <title>Employee Attendance</title>
-
     <style>
         * {
             box-sizing: border-box;
         }
-
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
             color: #222;
             background: #f5f7f8;
         }
-
-        header {
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
             padding: 17px 20px;
             background: #fff;
             border-bottom: 1px solid #ddd;
             font-weight: bold;
         }
-
+        .forum-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #176b55;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+        .forum-link:hover {
+            background: #10513f;
+        }
         main {
             width: min(100% - 28px, 560px);
             margin: 28px auto;
         }
-
         .panel, .modal-content {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 22px;
         }
-
         h1 {
             font-size: 25px;
             margin: 0 0 8px;
         }
-
         h2 {
             font-size: 19px;
             margin: 0 0 14px;
         }
-
         p {
             line-height: 1.5;
         }
-
         .muted {
             color: #666;
             font-size: 14px;
         }
-
         label {
             display: block;
             margin: 14px 0 6px;
             font-size: 14px;
             font-weight: 600;
         }
-
         input {
             width: 100%;
             padding: 11px;
@@ -72,7 +78,6 @@
             font: inherit;
             background: #fff;
         }
-
         button {
             border: 0;
             border-radius: 5px;
@@ -82,22 +87,18 @@
             background: #176b55;
             color: #fff;
         }
-
         button:disabled {
             opacity: .6;
             cursor: not-allowed;
         }
-
         .primary {
             width: 100%;
             margin-top: 16px;
         }
-
         .secondary {
             background: #e9e9e9;
             color: #222;
         }
-
         .notice {
             display: none;
             margin: 14px 0;
@@ -108,37 +109,30 @@
             font-size: 14px;
             line-height: 1.5;
         }
-
         .notice.show {
             display: block;
         }
-
         .notice.success {
             background: #e8f6ee;
             color: #17643b;
         }
-
         .notice.info {
             background: #eaf2ff;
             color: #214d86;
         }
-
         #attendanceCard {
             display: none;
             margin-top: 22px;
         }
-
         #attendanceCard.visible {
             display: block;
         }
-
         .employee-info {
             text-align: center;
             border-bottom: 1px solid #eee;
             padding-bottom: 18px;
             margin-bottom: 18px;
         }
-
         #employeeProfilePic {
             display: block;
             width: 104px;
@@ -149,34 +143,28 @@
             border: 1px solid #ddd;
             background: #eee;
         }
-
         .employee-name {
             font-weight: bold;
             font-size: 18px;
         }
-
         .small {
             color: #666;
             font-size: 13px;
             margin-top: 5px;
         }
-
         .profile-form {
             margin-top: 14px;
             text-align: left;
         }
-
         .profile-form button {
             width: 100%;
             margin-top: 10px;
         }
-
         .status {
             margin: 14px 0;
             font-size: 14px;
             color: #555;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -188,22 +176,18 @@
             justify-content: center;
             overflow-y: auto;
         }
-
         .modal.open {
             display: flex;
         }
-
         .modal-content {
             width: min(100%, 440px);
             max-height: 95vh;
             overflow-y: auto;
         }
-
         .modal-actions {
             display: grid;
             gap: 8px;
         }
-
         #cameraVideo {
             width: 100%;
             max-height: 340px;
@@ -213,29 +197,28 @@
             border-radius: 8px;
             margin-top: 12px;
         }
-
         .camera-help {
             font-size: 13px;
             color: #666;
             line-height: 1.5;
         }
-
         footer {
             text-align: center;
             padding: 20px;
             color: #777;
             font-size: 12px;
         }
-
         [hidden] {
             display: none !important;
         }
     </style>
 </head>
-
 <body>
 
-<header>Employee Attendance</header>
+<header class="site-header">
+    <span>Employee Attendance</span>
+    <a href="/forum/" class="forum-link">💬 Employee Forum</a>
+</header>
 
 <main>
     <section class="panel">
@@ -274,8 +257,11 @@
 
         <section id="attendanceCard">
             <div class="employee-info">
-                <img id="employeeProfilePic" alt="Employee profile picture"
-                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='100%25' height='100%25' fill='%23eeeeee'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23999999'/%3E%3Cpath d='M20 115 Q20 72 60 72 Q100 72 100 115' fill='%23999999'/%3E%3C/svg%3E">
+                <img
+                    id="employeeProfilePic"
+                    alt="Employee profile picture"
+                    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='100%25' height='100%25' fill='%23eeeeee'/%3E%3Ccircle cx='60' cy='43' r='22' fill='%23999999'/%3E%3Cpath d='M20 115 Q20 72 60 72 Q100 72 100 115' fill='%23999999'/%3E%3C/svg%3E"
+                >
 
                 <div id="employeeName" class="employee-name"></div>
                 <div id="employeeIdLabel" class="small"></div>
@@ -326,7 +312,6 @@
 <!-- Password setup/sign-in modal -->
 <div id="passwordModal" class="modal"
      role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-
     <div class="modal-content">
         <h2 id="modalTitle">Create your password</h2>
 
@@ -374,7 +359,6 @@
 <!-- Face enrollment/verification modal -->
 <div id="faceModal" class="modal"
      role="dialog" aria-modal="true" aria-labelledby="faceTitle">
-
     <div class="modal-content">
         <h2 id="faceTitle">Face authentication</h2>
 
@@ -407,7 +391,7 @@
     </div>
 </div>
 
-<!-- Correct browser build of face-api.js -->
+<!-- Face recognition library -->
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.js"></script>
 
 <script>
@@ -635,7 +619,6 @@
             );
 
             captureFaceBtn.disabled = false;
-
         } catch (error) {
             console.error("Face authentication startup error:", error);
             stopCamera();
@@ -719,7 +702,6 @@
                 result.message || "Face authentication successful.",
                 "success"
             );
-
         } catch (error) {
             console.error("Face capture/authentication error:", error);
 
@@ -755,6 +737,7 @@
             "Employee ID: " + employee.id;
 
         const image = $("employeeProfilePic");
+
         image.onerror = () => {
             image.onerror = null;
             image.src = defaultImage;
@@ -828,7 +811,6 @@
                 message,
                 result.message || "The next authentication step was not provided."
             );
-
         } catch (error) {
             console.error("Identity verification error:", error);
             showNotice(message, "Could not contact the server. Please try again.");
@@ -892,6 +874,7 @@
 
             if (result.needs_face_auth) {
                 closePasswordModal();
+
                 await startFaceAuthentication(
                     Boolean(result.face_enrolled)
                 );
@@ -909,9 +892,9 @@
                 result.message ||
                 "The server did not provide the next authentication step."
             );
-
         } catch (error) {
             console.error("Password authentication error:", error);
+
             showNotice(
                 modalMessage,
                 "Could not contact the server. Please try again."
@@ -931,6 +914,7 @@
 
     $("cancelFaceBtn").addEventListener("click", () => {
         closeFaceModal();
+
         showNotice(
             message,
             "Face authentication was cancelled. Continue to sign in when ready."
@@ -989,6 +973,7 @@
             }
 
             const imageUrl = result.image_url;
+
             $("employeeProfilePic").src =
                 imageUrl + (imageUrl.includes("?") ? "&" : "?") +
                 "v=" + Date.now();
@@ -1002,7 +987,6 @@
             );
 
             pictureForm.reset();
-
         } catch (error) {
             console.error("Profile picture upload error:", error);
             showNotice(pictureMessage, "Could not upload the picture.");
@@ -1045,6 +1029,7 @@
                             gpsMessage,
                             result.message || "Check-in failed."
                         );
+
                         statusText.textContent =
                             result.status || "Check-in unsuccessful.";
                         return;
@@ -1057,7 +1042,6 @@
                     );
 
                     statusText.textContent = "Status: " + result.status;
-
                 } catch (error) {
                     console.error("GPS check-in error:", error);
                     showNotice(gpsMessage, "Could not contact the server.");
@@ -1117,4 +1101,3 @@
 
 </body>
 </html>
-```

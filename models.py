@@ -48,3 +48,14 @@ class Attendance(db.Model):
 
     __table_args__ = (db.UniqueConstraint("employee_id","attendance_date",name="uq_employee_attendance_date"),)
 
+
+class ForumPost(db.Model):
+    __tablename__ = "forum_post"
+
+    id = db.Column(db.Integer, primary_key=True)
+    employee_id = db.Column(db.Integer,db.ForeignKey("employee.id"),nullable=False,index=True)
+    message = db.Column(db.Text, nullable=False, default="")
+    media_path = db.Column(db.String(500), nullable=True)
+    media_type = db.Column(db.String(20), nullable=True)
+    created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow,index=True)
+    employee = db.relationship("Employee", backref="forum_posts")

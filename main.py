@@ -17,6 +17,8 @@ from models import Employee, Salary
 
 from empl_checker import attendance_bp
 from employer import employer_bp
+from forum import forum_bp
+from payment import payment_bp
 
 # Load configuration
 config_path = Path(__file__).resolve().parent / "config.env"
@@ -29,6 +31,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10 MB
 
 # Ensure required configuration exists
 if not app.config["SECRET_KEY"]:
@@ -43,6 +46,8 @@ db.init_app(app)
 # Register attendance routes
 app.register_blueprint(attendance_bp)
 app.register_blueprint(employer_bp)
+app.register_blueprint(forum_bp)
+app.register_blueprint(payment_bp)
 
 @app.route("/", methods=["GET", "POST"])
 def home():

@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,22 +7,70 @@
     <title>Employer Dashboard</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
             background: #f5f5f5;
             color: #222;
         }
 
-        h1, h2 {
+        /* Header */
+        .site-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 18px 25px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+        }
+
+        .site-header h1 {
+            margin: 0;
             color: #176b55;
+            font-size: 25px;
+        }
+
+        .forum-link {
+            display: inline-block;
+            padding: 11px 16px;
+            background: #176b55;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+
+        .forum-link:hover {
+            background: #10513f;
+        }
+
+        /* Main content */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: #176b55;
+            margin-top: 0;
         }
 
         .card {
             background: white;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 22px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         form {
@@ -30,8 +78,15 @@
         }
 
         input, select, button {
-            padding: 8px;
+            padding: 10px;
             margin: 4px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input, select {
+            border: 1px solid #ccc;
+            background: white;
         }
 
         button {
@@ -41,18 +96,23 @@
             cursor: pointer;
         }
 
+        button:hover {
+            background: #10513f;
+        }
+
         .table-container {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
+            min-width: 550px;
             border-collapse: collapse;
             background: white;
         }
 
         th, td {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             text-align: left;
         }
@@ -62,126 +122,209 @@
             color: white;
         }
 
+        tbody tr:nth-child(even) {
+            background: #f8fbf9;
+        }
+
         .percentage {
             font-weight: bold;
+        }
+
+        .report-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .summary-item {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px;
+            background: #f0f7f3;
+            border-radius: 6px;
+        }
+
+        .summary-item p {
+            margin-bottom: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #176b55;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                padding: 15px;
+            }
+
+            .site-header h1 {
+                font-size: 21px;
+            }
+
+            .dashboard-container {
+                padding: 0 12px;
+                margin-top: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            form input,
+            form select,
+            form button {
+                width: 100%;
+                margin: 6px 0;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Employer Dashboard</h1>
+    <header class="site-header">
+        <h1>Employer Dashboard</h1>
 
-    <div class="card">
-        <h2>Monthly Attendance Report</h2>
+       <!-- Employee Forum link -->
+<a href="/forum/" class="forum-link">
+    💬 Employee Forum
+</a>
 
-        <form method="GET" action="/employer/">
-            <label for="month">Month:</label>
-            <select name="month" id="month">
-                {% for m in range(1, 13) %}
-                <option value="{{ m }}"
-                    {% if m == selected_month %}selected{% endif %}>
-                    {{ [
-                        '', 'January', 'February', 'March',
-                        'April', 'May', 'June', 'July',
-                        'August', 'September', 'October',
-                        'November', 'December'
-                    ][m] }}
-                </option>
-                {% endfor %}
-            </select>
+<!-- Salary and Punctuality link -->
+<a href="{{ url_for('payment.salary_punctuality') }}" class="forum-link">
+    💰 Salaries &amp; Punctuality
+</a>
+    </header>
 
-            <label for="year">Year:</label>
-            <input
-                type="number"
-                name="year"
-                id="year"
-                value="{{ selected_year }}"
-                min="2000"
-                max="2100"
-                required
-            >
+    <main class="dashboard-container">
 
-            <button type="submit">View Report</button>
-        </form>
+        <section class="card">
+            <h2>Monthly Attendance Report</h2>
 
-        <p><strong>Total Employees:</strong> {{ total_employees }}</p>
-        <p><strong>Working Days:</strong> {{ working_days }}</p>
-        <p>
-            <strong>Average Attendance:</strong>
-            {{ average_percentage }}%
-        </p>
-    </div>
+            <form method="GET" action="/employer/">
+                <label for="month">Month:</label>
 
-    <div class="card">
-        <h2>All Employees</h2>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Days Present</th>
-                        <th>Attendance %</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for report in employee_reports %}
-                    <tr>
-                        <td>{{ report.employee.id }}</td>
-                        <td>{{ report.employee.emp_name }}</td>
-                        <td>{{ report.employee.email }}</td>
-                        <td>{{ report.present_days }}</td>
-                        <td class="percentage">
-                            {{ report.percentage }}%
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5">No employees found.</td>
-                    </tr>
+                <select name="month" id="month">
+                    {% for m in range(1, 13) %}
+                    <option value="{{ m }}"
+                        {% if m == selected_month %}selected{% endif %}>
+                        {{ [
+                            '', 'January', 'February', 'March',
+                            'April', 'May', 'June', 'July',
+                            'August', 'September', 'October',
+                            'November', 'December'
+                        ][m] }}
+                    </option>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+                </select>
 
-    <div class="card">
-        <h2>Employee Check-in Times</h2>
+                <label for="year">Year:</label>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+                <input
+                    type="number"
+                    name="year"
+                    id="year"
+                    value="{{ selected_year }}"
+                    min="2000"
+                    max="2100"
+                    required
+                >
 
-                <tbody>
-                    {% for attendance, employee in attendance_records %}
-                    <tr>
-                        <td>{{ employee.emp_name }}</td>
-                        <td>{{ attendance.attendance_date }}</td>
-                        <td>
-                            {{ attendance.check_in_at.strftime('%I:%M %p') }}
-                        </td>
-                        <td>{{ attendance.status }}</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="4">No attendance records found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+                <button type="submit">View Report</button>
+            </form>
+
+            <div class="report-summary">
+                <div class="summary-item">
+                    <strong>Total Employees</strong>
+                    <p>{{ total_employees }}</p>
+                </div>
+
+                <div class="summary-item">
+                    <strong>Working Days</strong>
+                    <p>{{ working_days }}</p>
+                </div>
+
+                <div class="summary-item">
+                    <strong>Average Attendance</strong>
+                    <p>{{ average_percentage }}%</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>All Employees</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Days Present</th>
+                            <th>Attendance %</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for report in employee_reports %}
+                        <tr>
+                            <td>{{ report.employee.id }}</td>
+                            <td>{{ report.employee.emp_name }}</td>
+                            <td>{{ report.employee.email }}</td>
+                            <td>{{ report.present_days }}</td>
+                            <td class="percentage">
+                                {{ report.percentage }}%
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">No employees found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Employee Check-in Times</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for attendance, employee in attendance_records %}
+                        <tr>
+                            <td>{{ employee.emp_name }}</td>
+                            <td>{{ attendance.attendance_date }}</td>
+                            <td>
+                                {% if attendance.check_in_at %}
+                                    {{ attendance.check_in_at.strftime('%I:%M %p') }}
+                                {% else %}
+                                    Not recorded
+                                {% endif %}
+                            </td>
+                            <td>{{ attendance.status }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4">No attendance records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
 
 </body>
 </html>
