@@ -1,0 +1,211 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <title>Edit Employee</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 25px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #667085;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 7px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd2da;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #b8d8f5;
+            border-color: #1769aa;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #1769aa;
+            color: #fff;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .cancel {
+            background: #687482;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            background: #e8f5e9;
+            color: #216e39;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #a01818;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .actions .btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Edit Employee</h1>
+        <p class="subtitle">
+            Update employee information and monthly salary.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {% if category == 'error' %}error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for('edit_employee.edit_employee', employee_id=employee.id) }}">
+
+            <label for="emp_name">Employee Name</label>
+            <input
+                type="text"
+                id="emp_name"
+                name="emp_name"
+                value="{{ employee.emp_name }}"
+                required
+            >
+
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ employee.email }}"
+                required
+            >
+
+            <label for="post">Position</label>
+            <input
+                type="text"
+                id="post"
+                name="post"
+                value="{{ employee.post }}"
+                required
+            >
+
+            <label for="employment_type">Employment Type</label>
+            <select id="employment_type" name="employment_type" required>
+                <option value="">Select employment type</option>
+
+                <option value="Full-time"
+                    {% if employment_type == 'Full-time' %}selected{% endif %}>
+                    Full-time
+                </option>
+
+                <option value="Part-time"
+                    {% if employment_type == 'Part-time' %}selected{% endif %}>
+                    Part-time
+                </option>
+
+                <option value="Contract"
+                    {% if employment_type == 'Contract' %}selected{% endif %}>
+                    Contract
+                </option>
+
+                <option value="Internship"
+                    {% if employment_type == 'Internship' %}selected{% endif %}>
+                    Internship
+                </option>
+            </select>
+
+            <label for="salary">Monthly Salary (GH₵)</label>
+            <input
+                type="number"
+                id="salary"
+                name="salary"
+                min="0"
+                step="0.01"
+                value="{{ salary_record.salary if salary_record else '' }}"
+                required
+            >
+
+            <div class="actions">
+                <button class="btn" type="submit">
+                    Save Changes
+                </button>
+
+                <a class="btn cancel"
+                   href="{{ url_for('edit_employee.employee_list') }}">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
     <title>Employee Attendance</title>
+
     <style>
         * {
             box-sizing: border-box;
         }
+
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
             color: #222;
             background: #f5f7f8;
         }
+
         .site-header {
             display: flex;
             justify-content: space-between;
@@ -26,6 +29,7 @@
             border-bottom: 1px solid #ddd;
             font-weight: bold;
         }
+
         .forum-link {
             display: inline-block;
             padding: 10px 15px;
@@ -36,40 +40,50 @@
             font-size: 14px;
             transition: background 0.2s ease;
         }
+
         .forum-link:hover {
             background: #10513f;
         }
+
         main {
             width: min(100% - 28px, 560px);
             margin: 28px auto;
         }
-        .panel, .modal-content {
+
+        .panel,
+        .modal-content {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 22px;
         }
+
         h1 {
             font-size: 25px;
             margin: 0 0 8px;
         }
+
         h2 {
             font-size: 19px;
             margin: 0 0 14px;
         }
+
         p {
             line-height: 1.5;
         }
+
         .muted {
             color: #666;
             font-size: 14px;
         }
+
         label {
             display: block;
             margin: 14px 0 6px;
             font-size: 14px;
             font-weight: 600;
         }
+
         input {
             width: 100%;
             padding: 11px;
@@ -78,6 +92,7 @@
             font: inherit;
             background: #fff;
         }
+
         button {
             border: 0;
             border-radius: 5px;
@@ -87,18 +102,22 @@
             background: #176b55;
             color: #fff;
         }
+
         button:disabled {
             opacity: .6;
             cursor: not-allowed;
         }
+
         .primary {
             width: 100%;
             margin-top: 16px;
         }
+
         .secondary {
             background: #e9e9e9;
             color: #222;
         }
+
         .notice {
             display: none;
             margin: 14px 0;
@@ -109,30 +128,68 @@
             font-size: 14px;
             line-height: 1.5;
         }
+
         .notice.show {
             display: block;
         }
+
         .notice.success {
             background: #e8f6ee;
             color: #17643b;
         }
+
         .notice.info {
             background: #eaf2ff;
             color: #214d86;
         }
+
+        /* Attendance and salary rules */
+        .attendance-rules {
+            margin: 18px 0;
+            padding: 16px;
+            background: #fff8e6;
+            border: 1px solid #edcf82;
+            border-left: 5px solid #d99a12;
+            border-radius: 8px;
+            color: #493914;
+            line-height: 1.6;
+        }
+
+        .attendance-rules h3 {
+            margin: 0 0 10px;
+            font-size: 17px;
+        }
+
+        .attendance-rules ul {
+            padding-left: 20px;
+            margin: 0 0 10px;
+        }
+
+        .attendance-rules li {
+            margin-bottom: 7px;
+        }
+
+        .attendance-rules p {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
         #attendanceCard {
             display: none;
             margin-top: 22px;
         }
+
         #attendanceCard.visible {
             display: block;
         }
+
         .employee-info {
             text-align: center;
             border-bottom: 1px solid #eee;
             padding-bottom: 18px;
             margin-bottom: 18px;
         }
+
         #employeeProfilePic {
             display: block;
             width: 104px;
@@ -143,28 +200,34 @@
             border: 1px solid #ddd;
             background: #eee;
         }
+
         .employee-name {
             font-weight: bold;
             font-size: 18px;
         }
+
         .small {
             color: #666;
             font-size: 13px;
             margin-top: 5px;
         }
+
         .profile-form {
             margin-top: 14px;
             text-align: left;
         }
+
         .profile-form button {
             width: 100%;
             margin-top: 10px;
         }
+
         .status {
             margin: 14px 0;
             font-size: 14px;
             color: #555;
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -176,18 +239,22 @@
             justify-content: center;
             overflow-y: auto;
         }
+
         .modal.open {
             display: flex;
         }
+
         .modal-content {
             width: min(100%, 440px);
             max-height: 95vh;
             overflow-y: auto;
         }
+
         .modal-actions {
             display: grid;
             gap: 8px;
         }
+
         #cameraVideo {
             width: 100%;
             max-height: 340px;
@@ -197,22 +264,42 @@
             border-radius: 8px;
             margin-top: 12px;
         }
+
         .camera-help {
             font-size: 13px;
             color: #666;
             line-height: 1.5;
         }
+
         footer {
             text-align: center;
             padding: 20px;
             color: #777;
             font-size: 12px;
         }
+
         [hidden] {
             display: none !important;
         }
+
+        @media (max-width: 480px) {
+            .site-header {
+                padding: 14px;
+            }
+
+            main {
+                width: calc(100% - 20px);
+                margin: 15px auto;
+            }
+
+            .panel,
+            .modal-content {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
 <header class="site-header">
@@ -223,6 +310,7 @@
 <main>
     <section class="panel">
         <h1>Employee sign in</h1>
+
         <p class="muted">
             Enter your registered employee ID and full name to continue.
         </p>
@@ -275,6 +363,7 @@
                         accept=".jpg,.jpeg,.png,.webp"
                         required
                     >
+
                     <button id="uploadPictureBtn" type="submit">
                         Upload / Change Picture
                     </button>
@@ -284,7 +373,40 @@
                      role="status" aria-live="polite"></div>
             </div>
 
+            <!-- Attendance rules notice -->
+            <div class="attendance-rules"
+                 role="note"
+                 aria-label="Attendance and punctuality rules">
+
+                <h3>📢 Attendance &amp; Salary Rules</h3>
+
+                <ul>
+                    <li>
+                        <strong>Check-in deadline:</strong>
+                        You must check in at or before 8:30 AM to be
+                        considered punctual.
+                    </li>
+
+                    <li>
+                        <strong>Monthly punctuality requirement:</strong>
+                        Maintain at least 80% punctuality each month.
+                    </li>
+
+                    <li>
+                        <strong>Salary deduction:</strong>
+                        Monthly punctuality below 80% triggers a
+                        7% salary deduction.
+                    </li>
+                </ul>
+
+                <p>
+                    Please arrive on time and check in using the
+                    workplace GPS attendance system.
+                </p>
+            </div>
+
             <h2>Workplace check-in</h2>
+
             <p class="muted">
                 Allow location access to record attendance at your workplace.
             </p>
@@ -312,6 +434,7 @@
 <!-- Password setup/sign-in modal -->
 <div id="passwordModal" class="modal"
      role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
     <div class="modal-content">
         <h2 id="modalTitle">Create your password</h2>
 
@@ -347,6 +470,7 @@
                 <button id="passwordBtn" class="primary" type="submit">
                     Create password
                 </button>
+
                 <button id="cancelModalBtn"
                         class="primary secondary" type="button">
                     Cancel
@@ -359,6 +483,7 @@
 <!-- Face enrollment/verification modal -->
 <div id="faceModal" class="modal"
      role="dialog" aria-modal="true" aria-labelledby="faceTitle">
+
     <div class="modal-content">
         <h2 id="faceTitle">Face authentication</h2>
 
@@ -383,6 +508,7 @@
                     type="button" disabled>
                 Capture and verify face
             </button>
+
             <button id="cancelFaceBtn"
                     class="primary secondary" type="button">
                 Cancel

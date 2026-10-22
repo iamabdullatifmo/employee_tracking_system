@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Employees</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 25px 15px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px #00000012;
+        }
+
+        h1 { margin-top: 0; }
+
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5eb;
+            white-space: nowrap;
+        }
+
+        th { background: #f0f4f8; }
+
+        .btn {
+            display: inline-block;
+            padding: 9px 12px;
+            border: 0;
+            border-radius: 5px;
+            color: white;
+            background: #1769aa;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete { background: #c62828; }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            background: #e8f5e9;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #a01818;
+        }
+
+        .back { margin-bottom: 15px; }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Manage Employees</h1>
+    <p>View employee details and manage monthly salaries.</p>
+
+    <a class="btn back" href="{{ url_for('employer.dashboard') }}">
+        Back to Dashboard
+    </a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {% if category == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Position</th>
+                    <th>Employment Type</th>
+                    <th>Monthly Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for employee in employees %}
+                    {% set salary_record = salary_by_employee.get(employee.id) %}
+
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.emp_name }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.post }}</td>
+                        <td>{{ employment_type_by_id.get(employee.id, '') }}</td>
+
+                        <td>
+                            {% if salary_record %}
+                                GH₵ {{ "%.2f"|format(salary_record.salary|float) }}
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="actions">
+                                <a class="btn"
+                                   href="{{ url_for('edit_employee.edit_employee', employee_id=employee.id) }}">
+                                    Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{{ url_for('edit_employee.delete_employee', employee_id=employee.id) }}"
+                                      onsubmit="return confirm('Delete this employee and their salary records?');">
+                                    <button class="btn delete" type="submit">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">No employees found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

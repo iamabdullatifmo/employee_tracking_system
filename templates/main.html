@@ -1,161 +1,391 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Employee Enrolment | WorkForce</title>
+    <meta name="theme-color" content="#123b32">
+    <title>Employee Enrolment | Workforce</title>
 
     <style>
+        :root {
+            --primary: #176b55;
+            --primary-dark: #104b3c;
+            --primary-light: #e8f4ef;
+            --background: #f5f7f9;
+            --surface: #ffffff;
+            --text: #202b35;
+            --muted: #75818d;
+            --border: #e3e9e7;
+            --danger: #b42318;
+            --success: #16794b;
+            --shadow: 0 8px 28px rgba(28, 48, 42, 0.05);
+        }
+
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: #f4f7fb;
-            color: #1e293b;
-            min-height: 100vh;
+            margin: 0;
+            font-family: Inter, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background: var(--background);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
         }
 
         /* Navigation */
         .navbar {
-            background: #ffffff;
-            padding: 18px 7%;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            min-height: 76px;
+            margin: 0 auto;
+            padding: 12px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e5eaf1;
+            gap: 20px;
         }
 
         .brand {
-            font-size: 23px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 22px;
             font-weight: 800;
-            color: #2563eb;
-            letter-spacing: -0.7px;
         }
 
-        .brand span {
-            color: #1e293b;
+        .brand-name {
+            display: block;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
         }
 
-        .nav-label {
-            color: #64748b;
+        .brand-caption {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 650;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-link.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-link.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Page heading */
+        .page-container {
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 38px 25px 50px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 24px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary);
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-heading {
+            margin-bottom: 27px;
+        }
+
+        .eyebrow {
+            margin: 0 0 6px;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+        }
+
+        .page-heading h1 {
+            margin: 0;
+            font-size: clamp(26px, 4vw, 33px);
+            line-height: 1.25;
+            letter-spacing: -1px;
+        }
+
+        .page-heading p {
+            margin: 9px 0 0;
+            max-width: 620px;
+            color: var(--muted);
             font-size: 14px;
         }
 
         /* Main layout */
-        .page-container {
-            max-width: 1100px;
-            margin: 45px auto;
-            padding: 0 20px;
-        }
-
-        .page-heading {
-            margin-bottom: 28px;
-        }
-
-        .page-heading h1 {
-            font-size: 30px;
-            margin-bottom: 9px;
-            color: #172554;
-        }
-
-        .page-heading p {
-            color: #64748b;
-            line-height: 1.6;
-        }
-
-        .content {
+        .content-grid {
             display: grid;
-            grid-template-columns: 0.85fr 1.5fr;
-            gap: 25px;
-            align-items: stretch;
+            grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+            align-items: start;
+            gap: 24px;
         }
 
         /* Information panel */
         .info-panel {
-            background: linear-gradient(145deg, #1d4ed8, #1e40af);
+            position: relative;
+            overflow: hidden;
+            padding: 30px 26px;
             color: white;
-            padding: 32px 27px;
-            border-radius: 16px;
-            min-height: 400px;
+            background: linear-gradient(150deg, #176b55, #103d32);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .info-panel::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            right: -90px;
+            bottom: -100px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 50%;
+            box-shadow: 0 0 0 25px rgba(255, 255, 255, 0.035),
+                        0 0 0 50px rgba(255, 255, 255, 0.025);
+            pointer-events: none;
         }
 
         .info-icon {
-            width: 58px;
-            height: 58px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 25px;
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 25px;
         }
 
         .info-panel h2 {
+            margin: 0 0 12px;
             font-size: 24px;
-            line-height: 1.4;
-            margin-bottom: 14px;
+            line-height: 1.35;
+            letter-spacing: -0.5px;
         }
 
-        .info-panel > p {
-            color: #dbeafe;
-            font-size: 14px;
-            line-height: 1.8;
+        .info-description {
+            margin: 0;
+            color: #d8ebe4;
+            font-size: 13px;
+            line-height: 1.85;
+        }
+
+        .benefit-heading {
+            margin: 30px 0 14px;
+            color: #c4e6d8;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
         }
 
         .benefits {
+            display: grid;
+            gap: 16px;
+            margin: 0;
+            padding: 0;
             list-style: none;
-            margin-top: 30px;
         }
 
         .benefits li {
-            margin: 19px 0;
-            font-size: 14px;
             display: flex;
-            gap: 10px;
-            line-height: 1.5;
+            align-items: flex-start;
+            gap: 11px;
+            color: #f1faf6;
+            font-size: 13px;
         }
 
-        .check {
-            color: #86efac;
-            font-weight: bold;
+        .check-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 22px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            color: #d4f8e5;
+            background: rgba(255, 255, 255, 0.13);
+            font-weight: 800;
+        }
+
+        .info-note {
+            position: relative;
+            z-index: 1;
+            margin-top: 30px;
+            padding-top: 19px;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            color: #c4e6d8;
+            font-size: 12px;
+            line-height: 1.7;
         }
 
         /* Form card */
         .form-card {
-            background: #ffffff;
-            border: 1px solid #e5eaf1;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+            min-width: 0;
+            padding: 29px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
         }
 
-        .form-heading {
+        .form-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
             padding-bottom: 22px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #edf0f5;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #edf0f2;
         }
 
-        .form-heading h2 {
-            font-size: 21px;
-            margin-bottom: 7px;
+        .form-header-icon {
+            display: grid;
+            place-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border-radius: 11px;
+            color: var(--primary);
+            background: var(--primary-light);
+            font-size: 20px;
         }
 
-        .form-heading p {
-            color: #64748b;
+        .form-header h2 {
+            margin: 0;
+            font-size: 19px;
+            letter-spacing: -0.4px;
+        }
+
+        .form-header p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .required-note {
+            margin: 0 0 22px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        /* Flash messages */
+        .alerts {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .alert {
+            padding: 13px 15px;
+            border: 1px solid transparent;
+            border-radius: 9px;
             font-size: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
         }
 
+        .alert.success {
+            color: #166534;
+            background: #effaf3;
+            border-color: #ccebd6;
+        }
+
+        .alert.error,
+        .alert.danger {
+            color: #991b1b;
+            background: #fff1f0;
+            border-color: #ffd5d2;
+        }
+
+        .alert.warning {
+            color: #854d0e;
+            background: #fffbeb;
+            border-color: #f6e5a7;
+        }
+
+        .alert.info {
+            color: #1e40af;
+            background: #eff6ff;
+            border-color: #dbeafe;
+        }
+
+        /* Form fields */
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px 18px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 21px 17px;
         }
 
         .form-group {
@@ -168,132 +398,221 @@
             grid-column: 1 / -1;
         }
 
-        label {
-            font-size: 13px;
-            font-weight: 650;
-            margin-bottom: 9px;
-            color: #334155;
-        }
-
-        .required {
-            color: #dc2626;
+        .form-group label {
+            margin-bottom: 8px;
+            color: #34433f;
+            font-size: 12px;
+            font-weight: 750;
         }
 
         input,
         select {
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dbe2ea;
+            min-height: 47px;
+            padding: 12px 13px;
+            border: 1px solid #dce4e1;
             border-radius: 8px;
-            font-size: 14px;
-            color: #1e293b;
-            background: #ffffff;
             outline: none;
+            background: #fff;
+            color: var(--text);
+            font: inherit;
+            font-size: 13px;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input::placeholder {
-            color: #a0aaba;
+            color: #a0aaa7;
+        }
+
+        input:hover,
+        select:hover {
+            border-color: #b9cbc3;
         }
 
         input:focus,
         select:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 107, 85, 0.11);
         }
 
         .field-hint {
             margin-top: 7px;
+            color: var(--muted);
             font-size: 11px;
-            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-prefix {
+            position: absolute;
+            top: 50%;
+            left: 13px;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 750;
+            pointer-events: none;
+        }
+
+        .currency-input input {
+            padding-left: 52px;
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: grid;
+            gap: 12px;
+            margin-top: 28px;
         }
 
         .submit-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
             width: 100%;
-            margin-top: 28px;
-            padding: 14px;
-            border: none;
+            min-height: 49px;
+            padding: 13px 18px;
+            border: 0;
             border-radius: 9px;
-            background: #2563eb;
             color: white;
-            font-size: 15px;
-            font-weight: 650;
+            background: var(--primary);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 750;
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
         }
 
         .submit-btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
+            background: var(--primary-dark);
         }
 
-        /* Flash messages */
-        .alert {
-            padding: 13px 15px;
-            border-radius: 8px;
-            margin-bottom: 22px;
-            font-size: 14px;
-            line-height: 1.5;
+        .submit-btn:focus-visible,
+        .nav-link:focus-visible {
+            outline: 3px solid rgba(23, 107, 85, 0.3);
+            outline-offset: 3px;
         }
 
-        .alert.success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
+        .submit-btn:active {
+            transform: translateY(1px);
         }
 
-        .alert.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+        .security-note {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
         }
 
         /* Footer */
-        footer {
+        .footer {
+            padding: 26px 15px;
+            color: var(--muted);
             text-align: center;
-            padding: 25px 15px;
-            color: #94a3b8;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        /* Mobile layout */
-        @media (max-width: 760px) {
-            .content {
+        /* Responsive layouts */
+        @media (max-width: 850px) {
+            .nav-inner {
+                padding: 12px 20px;
+            }
+
+            .content-grid {
                 grid-template-columns: 1fr;
             }
 
             .info-panel {
-                min-height: auto;
+                padding: 25px;
+            }
+
+            .benefits {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .info-note {
+                margin-top: 22px;
             }
 
             .page-container {
-                margin: 30px auto;
-            }
-
-            .page-heading h1 {
-                font-size: 25px;
-            }
-
-            .form-card {
-                padding: 23px 18px;
+                padding-top: 28px;
             }
         }
 
-        @media (max-width: 420px) {
+        @media (max-width: 520px) {
+            .nav-inner {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+                padding: 13px 16px;
+            }
+
+            .nav-actions {
+                width: 100%;
+            }
+
+            .nav-link {
+                flex: 1;
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            .page-container {
+                padding: 24px 13px 32px;
+            }
+
+            .page-heading {
+                margin-bottom: 20px;
+            }
+
+            .page-heading h1 {
+                font-size: 27px;
+            }
+
+            .form-card {
+                padding: 21px 17px;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
+                gap: 18px;
             }
 
             .full-width {
                 grid-column: auto;
             }
 
-            .navbar {
-                padding: 16px 5%;
+            .benefits {
+                grid-template-columns: 1fr;
+                gap: 13px;
             }
 
-            .nav-label {
-                font-size: 12px;
+            .info-panel {
+                padding: 23px 20px;
+            }
+
+            .info-panel h2 {
+                font-size: 22px;
+            }
+
+            .form-header h2 {
+                font-size: 18px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
             }
         }
     </style>
@@ -301,64 +620,115 @@
 
 <body>
 
-    <nav class="navbar">
-        <div class="brand">Work<span>Force.</span></div>
-        <div class="nav-label">Employee Management System</div>
+    <!-- Navigation -->
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="nav-inner">
+
+            <a href="{{ url_for('employer.dashboard') }}" class="brand">
+                <span class="brand-icon">W</span>
+                <span>
+                    <span class="brand-name">Workforce</span>
+                    <span class="brand-caption">Employee Management</span>
+                </span>
+            </a>
+
+            <div class="nav-actions">
+                <a href="{{ url_for('employer.dashboard') }}"
+                   class="nav-link">
+                    ← Back to Dashboard
+                </a>
+
+                <a href="{{ url_for('home') }}"
+                   class="nav-link primary"
+                   aria-current="page">
+                    + Enrol Employee
+                </a>
+            </div>
+
+        </div>
     </nav>
 
     <main class="page-container">
 
-        <div class="page-heading">
-            <h1>Employee Enrolment</h1>
-            <p>Register a new employee and record their employment details.</p>
+        <div class="breadcrumb">
+            <a href="{{ url_for('employer.dashboard') }}">Dashboard</a>
+            <span aria-hidden="true">/</span>
+            <span>Employee Enrolment</span>
         </div>
 
-        <div class="content">
+        <header class="page-heading">
+            <p class="eyebrow">Workforce management</p>
+            <h1>Employee Enrolment</h1>
+            <p>
+                Add a new member to your team and keep their employment
+                information organised in one place.
+            </p>
+        </header>
 
-            <!-- Left information panel -->
+        <div class="content-grid">
+
+            <!-- Information panel -->
             <aside class="info-panel">
+                <div class="info-icon" aria-hidden="true">♙</div>
 
-                <div class="info-icon">👥</div>
+                <h2>Grow your team with confidence.</h2>
 
-                <h2>Build your team with confidence.</h2>
-
-                <p>
-                    Add new employees to your workforce by entering
-                    their personal information, job position and salary.
+                <p class="info-description">
+                    Create an employee record by entering their name,
+                    contact information, job position, employment type
+                    and agreed monthly salary.
                 </p>
+
+                <p class="benefit-heading">What you'll set up</p>
 
                 <ul class="benefits">
                     <li>
-                        <span class="check">✓</span>
-                        Organised employee records
+                        <span class="check-icon" aria-hidden="true">✓</span>
+                        <span>Employee identity and contact details</span>
                     </li>
                     <li>
-                        <span class="check">✓</span>
-                        Clear salary information
+                        <span class="check-icon" aria-hidden="true">✓</span>
+                        <span>Job position and employment category</span>
                     </li>
                     <li>
-                        <span class="check">✓</span>
-                        Structured employment details
+                        <span class="check-icon" aria-hidden="true">✓</span>
+                        <span>Monthly salary record in Ghana cedis</span>
                     </li>
                 </ul>
 
+                <div class="info-note">
+                    Please verify the information before submitting.
+                    The employee and salary records are saved together.
+                </div>
             </aside>
 
-            <!-- Employee enrolment form -->
+            <!-- Registration form -->
             <section class="form-card">
 
-                <div class="form-heading">
-                    <h2>Employee Information</h2>
-                    <p>Complete all required fields marked with an asterisk (*).</p>
+                <div class="form-header">
+                    <div class="form-header-icon" aria-hidden="true">＋</div>
+                    <div>
+                        <h2>Employee Information</h2>
+                        <p>Enter the details below to register an employee.</p>
+                    </div>
                 </div>
+
+                <p class="required-note">
+                    Fields marked with <span class="required">*</span>
+                    are required.
+                </p>
 
                 <!-- Flask flash messages -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% for category, message in messages %}
-                        <div class="alert {{ category }}" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
+                    {% if messages %}
+                    <div class="alerts" aria-live="polite">
+                        {% for category, message in messages %}
+                            <div class="alert {{ category }}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 {% endwith %}
 
                 <form action="{{ url_for('home') }}" method="POST">
@@ -367,14 +737,14 @@
 
                         <div class="form-group full-width">
                             <label for="emp_name">
-                                Employee Full Name <span class="required">*</span>
+                                Full Name <span class="required">*</span>
                             </label>
 
                             <input
                                 type="text"
                                 id="emp_name"
                                 name="emp_name"
-                                placeholder="e.g. Abdul Mohammed"
+                                placeholder="Enter employee's full name"
                                 autocomplete="name"
                                 maxlength="100"
                                 required
@@ -395,6 +765,9 @@
                                 maxlength="120"
                                 required
                             >
+                            <span class="field-hint">
+                                Use a valid email address for the employee.
+                            </span>
                         </div>
 
                         <div class="form-group">
@@ -422,7 +795,9 @@
                                 name="employment_type"
                                 required
                             >
-                                <option value="">Select type</option>
+                                <option value="" disabled selected>
+                                    Select employment type
+                                </option>
                                 <option value="Full-time">Full-time</option>
                                 <option value="Part-time">Part-time</option>
                                 <option value="Contract">Contract</option>
@@ -433,29 +808,41 @@
 
                         <div class="form-group full-width">
                             <label for="salary">
-                                Monthly Salary (GHS) <span class="required">*</span>
+                                Monthly Salary <span class="required">*</span>
                             </label>
 
-                            <input
-                                type="number"
-                                id="salary"
-                                name="salary"
-                                placeholder="e.g. 3500.00"
-                                min="0.01"
-                                step="0.01"
-                                required
-                            >
+                            <div class="currency-input">
+                                <span class="currency-prefix">GHS</span>
+                                <input
+                                    type="number"
+                                    id="salary"
+                                    name="salary"
+                                    placeholder="0.00"
+                                    min="0.01"
+                                    step="0.01"
+                                    inputmode="decimal"
+                                    required
+                                >
+                            </div>
 
                             <span class="field-hint">
-                                Enter the employee's agreed monthly salary in Ghana cedis.
+                                Enter the agreed monthly salary in Ghana cedis.
                             </span>
                         </div>
 
                     </div>
 
-                    <button type="submit" class="submit-btn">
-                        + &nbsp; Enrol Employee
-                    </button>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <span aria-hidden="true">＋</span>
+                            Register Employee
+                        </button>
+
+                        <div class="security-note">
+                            <span aria-hidden="true">✓</span>
+                            <span>Review the details before submitting the form.</span>
+                        </div>
+                    </div>
 
                 </form>
 
@@ -465,11 +852,9 @@
 
     </main>
 
-    <footer>
-        &copy; 2026 WorkForce Employee Management System.
-        All rights reserved.
+    <footer class="footer">
+        &copy; 2026 Workforce Employee Management System
     </footer>
 
 </body>
 </html>
-```
